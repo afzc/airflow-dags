@@ -11,11 +11,11 @@ default_args = {
     'email_on_failure': False,
     'email_on_retry': False,
     'retries': 1,
-    'retry_delay': timedelta(minutes=5)
+    'retry_delay': timedelta(minutes=3)
 }
 
 dag = DAG(
-    'sample_k', default_args=default_args, schedule_interval=timedelta(minutes=10))
+    'sample_k', default_args=default_args, schedule_interval=timedelta(minutes=6))
 
 start = DummyOperator(task_id='task-0', dag=dag)
 
