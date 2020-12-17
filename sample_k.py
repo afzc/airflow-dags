@@ -17,28 +17,30 @@ default_args = {
 dag = DAG(
     'sample_k', default_args=default_args, schedule_interval=timedelta(minutes=6))
 
-start = DummyOperator(task_id='task-0', dag=dag)
+start = DummyOperator(task_id='run_this_first', dag=dag)
 
 passing = KubernetesPodOperator(namespace='airflow',
-                          image="python:3.6",
+                          image="python:3.9-alpine3.12",
                           cmds=["python","-c"],
-                          arguments=["print('hello, python:3.6')"],
+                          arguments=["print('hello, python:3.9-alpine3.12')"],
                           labels={"foo": "bar"},
-                          name="task-1",
-                          task_id="task-1",
+                          name="passing-test",
+                          task_id="passing-task",
                           get_logs=True,
-                          dag=dag
+                          dag=dag,
+                          in_cluster=True
                           )
 
 failing = KubernetesPodOperator(namespace='airflow',
-                          image="ubuntu:16.04",
+                          image="python:3.8.6-alpine3.12",
                           cmds=["python","-c"],
-                          arguments=["print('hello, ubuntu:16.04')"],
+                          arguments=["print('hello, python:3.8.6-alpine3.12')"],
                           labels={"foo": "bar"},
-                          name="task-2",
-                          task_id="task-2",
+                          name="fail",
+                          task_id="failing-task",
                           get_logs=True,
-                          dag=dag
+                          dag=dag,
+                          in_cluster=True
                           )
 
 passing.set_upstream(start)
