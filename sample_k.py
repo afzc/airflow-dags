@@ -30,7 +30,7 @@ passing = KubernetesPodOperator(namespace='airflow',
                           dag=dag
                           )
 
-failing = KubernetesPodOperator(namespace='airflow-task',
+failing = KubernetesPodOperator(namespace='airflow',
                           image="python:3.8.6-alpine3.12",
                           cmds=["python","-c"],
                           arguments=["print('hello, python:3.8.6-alpine3.12')"],
