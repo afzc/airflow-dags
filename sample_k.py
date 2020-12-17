@@ -15,28 +15,28 @@ default_args = {
 }
 
 dag = DAG(
-    'kubernetes_sample', default_args=default_args, schedule_interval=timedelta(minutes=10))
+    'sample_k', default_args=default_args, schedule_interval=timedelta(minutes=10))
 
-start = DummyOperator(task_id='run_this_first', dag=dag)
+start = DummyOperator(task_id='task-0', dag=dag)
 
-passing = KubernetesPodOperator(namespace='default',
-                          image="python:3.6",
+passing = KubernetesPodOperator(namespace='airflow-task',
+                          image="python:3.9-alpine3.12",
                           cmds=["python","-c"],
-                          arguments=["print('hello world')"],
+                          arguments=["print('hello world, python:3.9-alpine3.12')"],
                           labels={"foo": "bar"},
-                          name="passing-test",
-                          task_id="passing-task",
+                          name="task-1",
+                          task_id="task-1",
                           get_logs=True,
                           dag=dag
                           )
 
-failing = KubernetesPodOperator(namespace='default',
-                          image="ubuntu:1604",
+failing = KubernetesPodOperator(namespace='airflow-task',
+                          image="python:3.8.6-alpine3.12",
                           cmds=["python","-c"],
-                          arguments=["print('hello world')"],
+                          arguments=["print('hello world, python:3.8.6-alpine3.12')"],
                           labels={"foo": "bar"},
-                          name="fail",
-                          task_id="failing-task",
+                          name="task-2",
+                          task_id="task-2",
                           get_logs=True,
                           dag=dag
                           )
